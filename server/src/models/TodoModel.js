@@ -1,7 +1,13 @@
 const mongoose = require('mongoose'); 
 
 const TodoSchema = new mongoose.Schema({
-    text: {
+    name: {
+        type: String,
+    },
+    amount: {
+        type: String,
+    },
+    grammage: {
         type: String,
     },
     completed: {

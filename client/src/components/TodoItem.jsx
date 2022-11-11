@@ -7,7 +7,9 @@ import { TokenContext } from '../App';
 
 export const TodoItem = ({ todo }) => {
 
-    const [text, setText] = useState(todo.text)
+    const [name, setName] = useState(todo.name)
+    const [amount, setAmount] = useState(todo.amount)
+    const [grammage, setGrammage] = useState(todo.grammage)
     const [token] = useContext(TokenContext);
     
     const queryClient = useQueryClient();
@@ -31,23 +33,23 @@ export const TodoItem = ({ todo }) => {
     const debouncedUpdateTodo = useCallback(debounce(updateTodo, 600), [updateTodo]);
 
     useEffect(() => {
-        if (text !== todo.text) {
-            debouncedUpdateTodo({...todo, text})
+        if (name !== todo.name) {
+            debouncedUpdateTodo({...todo, name})
         }
-    }, [text]);
+    }, [name]);
 
 
     return (
         <div>
-            <input checked={todo.completed} type="checkbox" value={todo.text} onChange={() => {
+            <input checked={todo.completed} type="checkbox" value={todo.name} onChange={() => {
                 updateTodo({
                     ...todo,
                     completed: !todo.completed
                 })
             }} />
-            <input type="text" value={text} onChange={(e) => {
-                setText(e.target.value)
-            }} />
+            {todo.completed ? <span style={{textDecoration: 'line-through'}}>{` ${name} `}</span> : ` ${name} `}
+            {` ${amount} `}
+            {` ${grammage} `}
             <button onClick={()=>deleteTodo(todo)}>Delete</button>
         </div>
     )

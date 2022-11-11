@@ -4,6 +4,7 @@ import './App.css';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { TodoPage } from './pages/TodoPage';
+import { ShoppingListPage } from './pages/ShoppingListPage';
 
 export const TokenContext = React.createContext(null);
 
@@ -21,6 +22,10 @@ function App() {
         <Routes>
           <Route
             path="/"
+            element={<ProtectedRoute element={ShoppingListPage} />}
+          />
+          <Route
+            path="/details"
             element={<ProtectedRoute element={TodoPage} />}
           />
           <Route path="login" element={<LoginPage />} />
