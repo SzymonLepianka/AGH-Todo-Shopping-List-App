@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { TokenContext } from '../App';
 
 export const LoginPage = () => {
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [token, setToken] = useContext(TokenContext);
@@ -11,7 +12,7 @@ export const LoginPage = () => {
     
   const handleLogin = (e) => {
     e.preventDefault();
-    loginRequest(password)
+    loginRequest(username, password)
       .then(({ token }) => {
         setToken(token);
         navigate('/');
@@ -25,13 +26,22 @@ export const LoginPage = () => {
     <div>
       <h1>Login</h1>
       <div style={{ color: 'red' }}>{error}</div>
-      <form onSubmit={handleLogin}>
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button>Login</button>
+          <form onSubmit={handleLogin}>
+              {`Username: `}
+            <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            />
+            <br></br>
+            {`Password: `}
+            <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+              />
+              <br></br>
+           <button>Login</button>
       </form>
     </div>
   );

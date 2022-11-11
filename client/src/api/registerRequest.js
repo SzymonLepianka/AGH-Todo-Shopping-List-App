@@ -1,20 +1,22 @@
 import { API_URL } from "./config"
 
 export default (username, password) => {
-    return fetch(`${API_URL}/login`, {
+    return fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: {
             "Content-Type": 'application/json'
         },
         body: JSON.stringify({
-            username, password
+            username,
+            password
         })
     })
         .then(response => {
             if (response.ok) {
-                return response.json()
+                // console.log(response)
+                return response.statusText
             } else {
-                throw new Error('Login failed')
+                throw new Error('Register failed')
             }
         })
 }
