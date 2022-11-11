@@ -1,6 +1,7 @@
 const TodoModel = require('../models/TodoModel');
 
 module.exports = async (req, res) => {
-    const todos = await TodoModel.find();
+    const { shoppingListId } = req.params;
+    const todos = await TodoModel.find({ shoppingListId });
     res.json(todos);
 }

@@ -8,7 +8,7 @@ export default (todo, token) => {
             "Content-Type": 'application/json'
         },
         body: JSON.stringify({
-            text: todo.text,
+            name: todo.name,
             completed: todo.completed
         })
     })

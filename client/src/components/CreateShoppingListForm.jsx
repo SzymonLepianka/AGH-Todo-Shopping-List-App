@@ -5,7 +5,7 @@ import { TokenContext } from "../App";
 
 
 export const CreateShoppingListForm = () => {
-    const [text, setText] = useState('');
+    const [name, setName] = useState('');
     const [date, setDate] = useState('');
     const [token] = useContext(TokenContext);
 
@@ -22,15 +22,15 @@ export const CreateShoppingListForm = () => {
     return (
         <form onSubmit={(e) => {
             e.preventDefault();
-            if (!text || !date) return;
+            if (!name || !date) return;
             createShoppingList({
-                text, date
+                name, date
             })
-            setText('');
+            setName('');
             setDate('');
         }}>
             {`Nazwa: `}
-            <input onChange={(e) => { setText(e.target.value) }} value={text} type="text" />
+            <input onChange={(e) => { setName(e.target.value) }} value={name} type="text" />
             {` Sugerowana data wykonania: `}
             <input onChange={(e) => { setDate(e.target.value) }} value={date} type="date" />
             {` `}

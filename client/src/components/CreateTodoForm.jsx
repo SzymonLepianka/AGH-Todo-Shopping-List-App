@@ -7,7 +7,7 @@ import CreatableSelect from 'react-select/creatable';
 
 
 
-export const CreateTodoForm = () => {
+export const CreateTodoForm = ({ shoppingListId }) => {
     const [name, setName] = useState('');
     const nameInputRef = useRef();
     const [amount, setAmount] = useState(0);
@@ -48,7 +48,7 @@ export const CreateTodoForm = () => {
     const queryClient = useQueryClient();
 
     const { mutate: createTodo } = useMutation((newTodo) => {
-        return createTodoRequest(newTodo, token);
+        return createTodoRequest(newTodo, shoppingListId, token);
     }, {
         onSettled: () => {
             queryClient.invalidateQueries('todos')

@@ -8,7 +8,8 @@ import { useNavigate } from 'react-router-dom';
 
 export const ShoppingList = ({ shoppingList }) => {
 
-    const [text, setText] = useState(shoppingList.text)
+    const [shoppingListId, setShoppingListId] = useState(shoppingList.shoppingListId)
+    const [name, setName] = useState(shoppingList.name)
     const [date, setDate] = useState(shoppingList.date)
     const [token] = useContext(TokenContext);
     const navigate = useNavigate();
@@ -34,29 +35,29 @@ export const ShoppingList = ({ shoppingList }) => {
     const debouncedUpdateShoppingList = useCallback(debounce(updateShoppingList, 600), [updateShoppingList]);
 
     useEffect(() => {
-        if (text !== shoppingList.text) {
-            debouncedUpdateShoppingList({...shoppingList, text})
+        if (name !== shoppingList.name) {
+            debouncedUpdateShoppingList({...shoppingList, name})
         }
-    }, [text]);
+    }, [name]);
 
     return (
         <div>
-            <input checked={shoppingList.completed} type="checkbox" value={shoppingList.text} onChange={() => {
+            <input checked={shoppingList.completed} type="checkbox" value={shoppingList.name} onChange={() => {
                 updateShoppingList({
                     ...shoppingList,
                     completed: !shoppingList.completed
                 })
             }} />
             {`Nazwa: `}
-            <input type="text" value={text} onChange={(e) => {
-                setText(e.target.value)
+            <input type="text" value={name} onChange={(e) => {
+                setName(e.target.value)
             }} />
             {` Sugerowana data wykonania: `}
             {date}
             {` `}
             <button onClick={() => deleteShoppingList(shoppingList)}>Delete</button>
             {` `}
-            <button onClick={()=>navigate('/details')}>Szczegóły</button>
+            <button onClick={()=>navigate('/details/' + shoppingListId)}>Szczegóły</button>
         </div>
     )
 }

@@ -1,7 +1,10 @@
 const mongoose = require('mongoose'); 
 
 const ShoppingListSchema = new mongoose.Schema({
-    text: {
+    shoppingListId: {
+        type: String,
+    },
+    name: {
         type: String,
     },
     date: {

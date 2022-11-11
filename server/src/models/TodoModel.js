@@ -2,16 +2,19 @@ const mongoose = require('mongoose');
 
 const TodoSchema = new mongoose.Schema({
     name: {
-        type: String,
+        type: String
     },
     amount: {
-        type: String,
+        type: String
     },
     grammage: {
-        type: String,
+        type: String
     },
     completed: {
-        type: Boolean,
+        type: Boolean
+    },
+    shoppingListId: {
+        type: String
     }
 });
 

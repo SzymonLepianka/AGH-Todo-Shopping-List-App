@@ -8,7 +8,7 @@ export default (shoppingList, token) => {
             "Content-Type": 'application/json'
         },
         body: JSON.stringify({
-            text: shoppingList.text,
+            name: shoppingList.name,
             completed: shoppingList.completed
         })
     })

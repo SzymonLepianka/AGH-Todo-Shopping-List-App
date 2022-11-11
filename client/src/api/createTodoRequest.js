@@ -1,6 +1,6 @@
 import { API_URL } from "./config"
 
-export default (todo, token) => {
+export default (todo, shoppingListId, token) => {
     return fetch(`${API_URL}/todos`, {
         method: 'POST',
         headers: {
@@ -11,7 +11,8 @@ export default (todo, token) => {
             name: todo.name,
             amount: todo.amount,
             grammage: todo.grammage,
-            completed: false
+            completed: false,
+            shoppingListId: shoppingListId
         })
     })
         .then(response => response.json())

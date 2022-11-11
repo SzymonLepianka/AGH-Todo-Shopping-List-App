@@ -4,7 +4,7 @@ module.exports = async (req, res) => {
     const { id } = req.params;
     const todo = await TodoModel.findById(id);
     todo.completed = req.body.completed;
-    todo.text = req.body.text;
+    todo.name = req.body.name;
     await todo.save();
     res.json(todo);
 }

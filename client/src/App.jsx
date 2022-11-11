@@ -25,7 +25,7 @@ function App() {
             element={<ProtectedRoute element={ShoppingListPage} />}
           />
           <Route
-            path="/details"
+            path="/details/:shoppingListId"
             element={<ProtectedRoute element={TodoPage} />}
           />
           <Route path="login" element={<LoginPage />} />

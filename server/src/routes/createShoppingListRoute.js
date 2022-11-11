@@ -1,10 +1,13 @@
 const ShoppingListModel = require('../models/ShoppingListModel');
+const uuid = require('uuid');
 
 module.exports = async (req, res) => {
-    const { text } = req.body;
+    const shoppingListId = uuid.v4();
+    const { name } = req.body;
     const { date } = req.body;
     const shoppingList = new ShoppingListModel({
-        text,
+        shoppingListId,
+        name,
         date,
         completed: false,
     })

@@ -17,7 +17,7 @@ router.post('/login', require('./routes/loginRoute'));
 router.post('/register', require('./routes/registerRoute'));
 
 router.post('/todos', isLoggedIn, createTodoRoute);
-router.get('/todos', isLoggedIn, readTodosRoute);
+router.get('/todos/:shoppingListId', isLoggedIn, readTodosRoute);
 router.put('/todos/:id', isLoggedIn, updateTodoRoute);
 router.delete('/todos/:id', isLoggedIn, deleteTodoRoute);
 
