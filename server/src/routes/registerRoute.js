@@ -15,5 +15,4 @@ module.exports = async (req, res) => {
     const newUser = await user.save();
     console.log("Created: " + newUser);
     res.status(201).send('Created!');
-
 }

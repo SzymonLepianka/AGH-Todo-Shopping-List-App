@@ -24,6 +24,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "mockingoose": "^2.15.2",
     "nodemon": "^2.0.20"
   }
 }
