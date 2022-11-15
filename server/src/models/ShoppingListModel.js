@@ -12,6 +12,9 @@ const ShoppingListSchema = new mongoose.Schema({
     },
     completed: {
         type: Boolean,
+    },
+    userId: {
+        type: String,
     }
 });
 

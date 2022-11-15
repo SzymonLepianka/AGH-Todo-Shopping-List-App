@@ -1,5 +1,5 @@
 const express = require('express');
-const isLoggedIn = require('./middleware/isLoggedIn');
+const { isLoggedIn } = require('./middleware/isLoggedIn');
 
 const createTodoRoute = require('./routes/createTodoRoute')
 const readTodosRoute = require('./routes/readTodosRoute')
