@@ -10,6 +10,14 @@ module.exports = async (req, res) => {
     const shoppingListId = uuid.v4();
     const { name } = req.body;
     const { date } = req.body;
+    if (!name) {
+        res.status(400).send("Missing name param");
+        return;
+    }
+    if (!date) {
+        res.status(400).send("Missing date param");
+        return;
+    }
     const shoppingList = new ShoppingListModel({
         shoppingListId,
         name,
