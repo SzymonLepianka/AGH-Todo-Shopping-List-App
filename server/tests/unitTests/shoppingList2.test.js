@@ -54,20 +54,14 @@ describe("shoppingList", () => {
     await mongoose.connect(mongoServer.getUri());
   });
 
-    afterEach(async () => {
+  afterEach(async () => {
     await clearDatabase()
     });
   
   afterAll(async () => {
-
-    await clearDatabase()
-
-
     await mongoose.disconnect();
     await mongoose.connection.close();
   });
-
-
 
   describe("create shoppingList route", () => {
     describe("given the user is not logged in (to create shoppingList)", () => {
@@ -78,7 +72,7 @@ describe("shoppingList", () => {
       });
     });
 
-    describe("given the user is logged in", () => {
+    describe("given the user is logged in (to create shoppingList)", () => {
       it("should return a 200 and create the shoppinglist", async () => {
         const token = jwt.sign({
           userId: userPayload_1.userId
@@ -104,9 +98,7 @@ describe("shoppingList", () => {
           userId: userPayload_1.userId,
         });
       });
-    });
 
-    describe("given the user is logged in", () => {
       it("should return a 400 (missing date param) and not create shoppingList", async () => {
         const token = jwt.sign({
           userId: userPayload_1.userId
@@ -128,9 +120,7 @@ describe("shoppingList", () => {
         expect(resGet.statusCode).toBe(200);
         expect(resGet.body).toEqual([]);
       });
-    });
 
-    describe("given the user is logged in", () => {
       it("should return a 400 (missing name param) and not create shoppingList", async () => {
         const token = jwt.sign({
           userId: userPayload_1.userId
@@ -143,6 +133,28 @@ describe("shoppingList", () => {
 
         expect(resPost.statusCode).toBe(400);
         expect(resPost.text).toEqual("Missing name param");
+        expect(resPost.body).toEqual({});
+
+        const resGet = await supertest(app)
+          .get(`/shoppingLists`)
+          .set("Authorization", `Bearer ${token}`);
+
+        expect(resGet.statusCode).toBe(200);
+        expect(resGet.body).toEqual([]);
+      });
+
+      it("should return a 400 (bad date format) and not create shoppingList", async () => {
+        const token = jwt.sign({
+          userId: userPayload_1.userId
+        }, process.env.SECRET);
+
+        const resPost = await supertest(app)
+          .post("/shoppingLists")
+          .set("Authorization", `Bearer ${token}`)
+          .send({date: "2022-11-01111", name: "testname"});
+
+        expect(resPost.statusCode).toBe(400);
+        expect(resPost.text).toEqual("Bad date format (expected YYYY-MM-DD)");
         expect(resPost.body).toEqual({});
 
         const resGet = await supertest(app)

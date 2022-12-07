@@ -18,6 +18,13 @@ module.exports = async (req, res) => {
         res.status(400).send("Missing date param");
         return;
     }
+
+    if (!dateIsValid(date)) {
+        res.status(400).send("Bad date format (expected YYYY-MM-DD)");
+        return;
+    }
+
+
     const shoppingList = new ShoppingListModel({
         shoppingListId,
         name,
@@ -28,3 +35,21 @@ module.exports = async (req, res) => {
     const newShoppingList = await shoppingList.save();
     res.json(newShoppingList);
 };
+
+function dateIsValid(dateStr) {
+  const regex = /^\d{4}-\d{2}-\d{2}$/;
+
+  if (dateStr.match(regex) === null) {
+    return false;
+  }
+
+  const date = new Date(dateStr);
+
+  const timestamp = date.getTime();
+
+  if (typeof timestamp !== 'number' || Number.isNaN(timestamp)) {
+    return false;
+  }
+
+  return date.toISOString().startsWith(dateStr);
+}
