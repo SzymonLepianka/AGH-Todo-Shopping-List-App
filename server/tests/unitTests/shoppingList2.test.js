@@ -184,26 +184,124 @@ describe("shoppingList", () => {
       });
     });
 
-    describe("given the shoppingList does exist", () => {
-      it("should return a 200 status and the shoppingListId", async () => {
-        const token = jwt.sign(
-          {
-            userId: userPayload_1.userId,
-          },
-          process.env.SECRET
+    describe("given the user is logged in (to read shoppingLists)", () => {
+      describe("given the user has no shopping lists", () => {
+        it("should return a 200 status and the shoppingListId", async () => {
+          // token autoryzacyjny użytkownika, który będzie dodany do requestów
+          const token = jwt.sign(
+            {
+              userId: userPayload_1.userId,
+            },
+            process.env.SECRET
+          );
+
+          // pobranie wszystkich list zakupów użytkownika
+          const resGet = await supertest(app)
+            .get(`/shoppingLists`)
+            .set("Authorization", `Bearer ${token}`);
+
+          // użytkownik powinien posiadać 0 list zakupów
+          expect(resGet.statusCode).toBe(200);
+          expect(resGet.body.length).toBe(0);
+          expect(resGet.body).toStrictEqual([]);
+        });
+      });
+      describe("given the user has shoppingList(s)", () => {
+        it.each([
+          [[shoppingListPayload_1]],
+          [[shoppingListPayload_1, shoppingListPayload_3]],
+        ])(
+          "should return a 200 status and the shoppingList(s)",
+          async (user_shopping_lists) => {
+            // token autoryzacyjny użytkownika, który będzie dodany do requestów
+            const token = jwt.sign(
+              {
+                userId: userPayload_1.userId,
+              },
+              process.env.SECRET
+            );
+
+            // dodanie list zakupów użytownika
+            let added_user_shopping_lists = [];
+            for (const sl of user_shopping_lists) {
+              const res = await supertest(app)
+                .post("/shoppingLists")
+                .set("Authorization", `Bearer ${token}`)
+                .send(sl);
+              added_user_shopping_lists = [
+                ...added_user_shopping_lists,
+                res.body,
+              ];
+            }
+
+            // pobranie wszystkich list zakupów użytkownika
+            const resGet = await supertest(app)
+              .get(`/shoppingLists`)
+              .set("Authorization", `Bearer ${token}`);
+
+            // użytkownik powinien posiadać dodane listy zakupów
+            expect(resGet.statusCode).toBe(200);
+            expect(resGet.body.length).toBe(added_user_shopping_lists.length);
+            added_user_shopping_lists.forEach((sl) => {
+              expect(resGet.body).toContainEqual(sl);
+            });
+          }
         );
 
-        const shoppingList = await supertest(app)
-          .post("/shoppingLists")
-          .set("Authorization", `Bearer ${token}`)
-          .send(shoppingListPayload_1);
+        it.each([
+          [[shoppingListPayload_1]],
+          [[shoppingListPayload_1, shoppingListPayload_3]],
+        ])(
+          "should return a 200 status and only user's shoppingList",
+          async (user_shopping_lists) => {
+            // token autoryzacyjny użytkownika, który będzie dodany do requestów
+            const token = jwt.sign(
+              {
+                userId: userPayload_1.userId,
+              },
+              process.env.SECRET
+            );
 
-        const { body, statusCode } = await supertest(app)
-          .get(`/shoppingLists`)
-          .set("Authorization", `Bearer ${token}`);
+            // token autoryzacyjny użytkownika(2), który również posiada listę zakupów
+            const token2 = jwt.sign(
+              {
+                userId: userPayload_2.userId,
+              },
+              process.env.SECRET
+            );
 
-        expect(statusCode).toBe(200);
-        expect(body.shoppingListId).toBe(shoppingList.shoppingListId);
+            // dodanie list zakupów użytownika
+            let added_user_shopping_lists = [];
+            for (const sl of user_shopping_lists) {
+              const res = await supertest(app)
+                .post("/shoppingLists")
+                .set("Authorization", `Bearer ${token}`)
+                .send(sl);
+              added_user_shopping_lists = [
+                ...added_user_shopping_lists,
+                res.body,
+              ];
+            }
+
+            // dodanie listy zakupów użytownika(2)
+            const shoppingList2 = await supertest(app)
+              .post("/shoppingLists")
+              .set("Authorization", `Bearer ${token2}`)
+              .send(shoppingListPayload_2);
+
+            // pobranie wszystkich list zakupów użytkownika
+            const resGet = await supertest(app)
+              .get(`/shoppingLists`)
+              .set("Authorization", `Bearer ${token}`);
+
+            // użytkownik powinien posiadać dodane listy zakupów
+            expect(resGet.statusCode).toBe(200);
+            expect(resGet.body.length).toBe(added_user_shopping_lists.length);
+            added_user_shopping_lists.forEach((sl) => {
+              expect(resGet.body).toContainEqual(sl);
+            });
+          }
+        );
       });
     });
   });
