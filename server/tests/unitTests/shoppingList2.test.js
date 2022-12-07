@@ -305,4 +305,107 @@ describe("shoppingList", () => {
       });
     });
   });
+
+  describe("update shoppingList route", () => {
+    describe("given the user is not logged in (to update shoppingList)", () => {
+      it("should return a 401", async () => {
+        const res = await supertest(app).put(`/shoppingLists/1`);
+        expect(res.statusCode).toBe(401);
+        expect(res.text).toEqual("invalid credentials");
+      });
+    });
+
+    describe("given the user is logged in (to update shoppingList)", () => {
+      describe("given the shopping list id doesn't exist", () => {
+        it.each([["63911197da116998ae2e8cd6"], ["123"]])(
+          "should return a 400",
+          async (sl_id) => {
+            // token autoryzacyjny użytkownika, który będzie dodany do requestów
+            const token = jwt.sign(
+              {
+                userId: userPayload_1.userId,
+              },
+              process.env.SECRET
+            );
+
+            // aktualizacja listy, która nie istnieje, przez użytkownika
+            const resPut = await supertest(app)
+              .put(`/shoppingLists/${sl_id}`)
+              .set("Authorization", `Bearer ${token}`);
+
+            expect(resPut.statusCode).toBe(400);
+          }
+        );
+      });
+      describe("given the user isn't the owner of the shopping list", () => {
+        it("should return a 401", async () => {
+          // token autoryzacyjny użytkownika, który będzie dodany do requestów
+          const token = jwt.sign(
+            {
+              userId: userPayload_1.userId,
+            },
+            process.env.SECRET
+          );
+
+          // token autoryzacyjny użytkownika(2), który będzie właścicielem listy zakupów
+          const token2 = jwt.sign(
+            {
+              userId: userPayload_2.userId,
+            },
+            process.env.SECRET
+          );
+
+          // dodanie listy zakupów użytownika(2)
+          const shoppingList2 = await supertest(app)
+            .post("/shoppingLists")
+            .set("Authorization", `Bearer ${token2}`)
+            .send(shoppingListPayload_2);
+
+          // aktualizacja listy użytkownika(2) przez użytkownika
+          const resPut = await supertest(app)
+            .put(`/shoppingLists/${shoppingList2.body._id}`)
+            .set("Authorization", `Bearer ${token}`);
+
+          expect(resPut.statusCode).toBe(401);
+          expect(resPut.text).toEqual(
+            "Shopping list doesn't belongs to this user"
+          );
+        });
+      });
+      describe("given the user is the owner of the shopping list", () => {
+        it("should return a 200 status and the shoppingList(s)", async () => {
+          // token autoryzacyjny użytkownika, który będzie dodany do requestów
+          const token = jwt.sign(
+            {
+              userId: userPayload_1.userId,
+            },
+            process.env.SECRET
+          );
+
+          // dodanie listy zakupów użytownika
+          const shoppingList = await supertest(app)
+            .post("/shoppingLists")
+            .set("Authorization", `Bearer ${token}`)
+            .send(shoppingListPayload_1);
+
+          // aktualizacja listy użytkownika
+          const resPut = await supertest(app)
+            .put(`/shoppingLists/${shoppingList.body._id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({ completed: true, name: "other_name" });
+
+          expect(resPut.statusCode).toBe(200);
+          expect(resPut.body).toEqual({
+            __v: 0,
+            _id: shoppingList.body._id,
+            shoppingListId: shoppingList.body.shoppingListId,
+            name: "other_name",
+            date: shoppingList.body.date,
+            completed: true,
+            userId: shoppingList.body.userId,
+          });
+        });
+      });
+    });
+  });
 });
