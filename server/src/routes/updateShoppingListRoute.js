@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
 
     // check if shoppingList belongs to this user
     if (shoppingList.userId !== userId) {
-      res.status(401).send("Shopping list doesn't belongs to this user");
+      res.status(401).send("Shopping list doesn't belong to this user");
       return;
     }
 
