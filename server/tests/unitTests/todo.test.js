@@ -7,22 +7,14 @@ const app = require("../../src/app.js");
 
 require("dotenv").config();
 
-// const shopping_list_id_1 = new mongoose.Types.ObjectId().toString();
 const shoppingListPayload_1 = {
   name: "test_list_name_1",
   date: "2022-11-01",
 };
 
-// const shopping_list_id_2 = new mongoose.Types.ObjectId().toString();
 const shoppingListPayload_2 = {
   name: "test_list_2",
   date: "2022-11-02",
-};
-
-// const shopping_list_id_3 = new mongoose.Types.ObjectId().toString();
-const shoppingListPayload_3 = {
-  name: "test_list_3",
-  date: "2022-11-03",
 };
 
 const todoPayload_1 = {
