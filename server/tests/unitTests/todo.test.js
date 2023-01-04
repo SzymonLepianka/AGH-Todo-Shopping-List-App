@@ -501,8 +501,6 @@ describe("todo", () => {
     });
   });
 
-  //TODO tu skończyłem
-
   describe("update todos route", () => {
     describe("given the user is not logged in (to update todos)", () => {
       it("should return a 401", async () => {
@@ -513,26 +511,28 @@ describe("todo", () => {
     });
 
     describe("given the user is logged in (to update todos)", () => {
-      describe("given the shopping list id doesn't exist", () => {
-        it.each([["63911197da116998ae2e8cd6"], ["123"]])(
-          "should return a 400",
-          async (sl_id) => {
-            // token autoryzacyjny użytkownika, który będzie dodany do requestów
-            const token = jwt.sign(
-              {
-                userId: userPayload_1.userId,
-              },
-              process.env.SECRET
-            );
+      describe("given the todo id doesn't exist", () => {
+        it.each([
+          ["63911197da116998ae2e8cd6"],
+          ["123"],
+          [new mongoose.Types.ObjectId().toString()],
+        ])("should return a 400", async (todo_id) => {
+          // token autoryzacyjny użytkownika, który będzie dodany do requestów
+          const token = jwt.sign(
+            {
+              userId: userPayload_1.userId,
+            },
+            process.env.SECRET
+          );
 
-            // aktualizacja listy, która nie istnieje, przez użytkownika
-            const resPut = await supertest(app)
-              .put(`/shoppingLists/${sl_id}`)
-              .set("Authorization", `Bearer ${token}`);
+          // aktualizacja przedmiotu (który nie istnieje) na liście, przez użytkownika
+          const resPut = await supertest(app)
+            .put(`/todos/${todo_id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({ completed: true, name: "other_name" });
 
-            expect(resPut.statusCode).toBe(400);
-          }
-        );
+          expect(resPut.statusCode).toBe(400);
+        });
       });
       describe("given the user isn't the owner of the shopping list", () => {
         it("should return a 401", async () => {
@@ -558,10 +558,22 @@ describe("todo", () => {
             .set("Authorization", `Bearer ${token2}`)
             .send(shoppingListPayload_2);
 
+          // dodanie przedmiotu do listy zakupów użytownika(2)
+          const todo2 = await supertest(app)
+            .post("/todos")
+            .set("Authorization", `Bearer ${token2}`)
+            .send({
+              name: todoPayload_2.name,
+              amount: todoPayload_2.amount,
+              grammage: todoPayload_2.grammage,
+              shoppingListId: shoppingList2.body.shoppingListId,
+            });
+
           // aktualizacja listy użytkownika(2) przez użytkownika(1)
           const resPut = await supertest(app)
-            .put(`/shoppingLists/${shoppingList2.body._id}`)
-            .set("Authorization", `Bearer ${token}`);
+            .put(`/todos/${todo2.body._id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({ name: "other_name", completed: true });
 
           expect(resPut.statusCode).toBe(401);
           expect(resPut.text).toEqual(
@@ -585,56 +597,68 @@ describe("todo", () => {
             .set("Authorization", `Bearer ${token}`)
             .send(shoppingListPayload_1);
 
+          // dodanie przedmiotu do listy zakupów użytownika
+          const todo = await supertest(app)
+            .post("/todos")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+              name: todoPayload_1.name,
+              amount: todoPayload_1.amount,
+              grammage: todoPayload_1.grammage,
+              shoppingListId: shoppingList.body.shoppingListId,
+            });
+
           // aktualizacja listy użytkownika
           const resPut = await supertest(app)
-            .put(`/shoppingLists/${shoppingList.body._id}`)
+            .put(`/todos/${todo.body._id}`)
             .set("Authorization", `Bearer ${token}`)
             .send({ completed: true, name: "other_name" });
 
           expect(resPut.statusCode).toBe(200);
           expect(resPut.body).toEqual({
             __v: 0,
-            _id: shoppingList.body._id,
+            _id: todo.body._id,
             shoppingListId: shoppingList.body.shoppingListId,
             name: "other_name",
-            date: shoppingList.body.date,
+            amount: todoPayload_1.amount,
+            grammage: todoPayload_1.grammage,
             completed: true,
-            userId: shoppingList.body.userId,
           });
         });
       });
     });
   });
-  describe("delete shoppingList route", () => {
-    describe("given the user is not logged in (to delete shoppingList)", () => {
+  describe("delete todos route", () => {
+    describe("given the user is not logged in (to delete todo)", () => {
       it("should return a 401", async () => {
-        const res = await supertest(app).delete(`/shoppingLists/1`);
+        const res = await supertest(app).delete(`/todos/1`);
         expect(res.statusCode).toBe(401);
         expect(res.text).toEqual("invalid credentials");
       });
     });
 
-    describe("given the user is logged in (to delete shoppingList)", () => {
-      describe("given the shopping list id doesn't exist", () => {
-        it.each([["63911197da116998ae2e8cd6"], ["123"]])(
-          "should return a 400",
-          async (sl_id) => {
-            // token autoryzacyjny użytkownika, który będzie dodany do requestów
-            const token = jwt.sign(
-              {
-                userId: userPayload_1.userId,
-              },
-              process.env.SECRET
-            );
+    describe("given the user is logged in (to delete todo)", () => {
+      describe("given the todo id doesn't exist", () => {
+        it.each([
+          ["63911197da116998ae2e8cd6"],
+          ["123"],
+          [new mongoose.Types.ObjectId().toString()],
+        ])("should return a 400", async (todo_id) => {
+          // token autoryzacyjny użytkownika, który będzie dodany do requestów
+          const token = jwt.sign(
+            {
+              userId: userPayload_1.userId,
+            },
+            process.env.SECRET
+          );
 
-            // próba usunięcia listy, która nie istnieje, przez użytkownika
-            const resDelete = await supertest(app)
-              .delete(`/shoppingLists/${sl_id}`)
-              .set("Authorization", `Bearer ${token}`);
+          // próba usunięcia przedmotu (który nie istnieje) z listy, przez użytkownika
+          const resDelete = await supertest(app)
+            .delete(`/todos/${todo_id}`)
+            .set("Authorization", `Bearer ${token}`);
 
-            expect(resDelete.statusCode).toBe(400);
-          }
-        );
+          expect(resDelete.statusCode).toBe(400);
+        });
       });
       describe("given the user isn't the owner of the shopping list", () => {
         it("should return a 401", async () => {
@@ -660,9 +684,20 @@ describe("todo", () => {
             .set("Authorization", `Bearer ${token2}`)
             .send(shoppingListPayload_2);
 
-          // próba usunięcia listy użytkownika(2) przez użytkownika(1)
+          // dodanie przedmiotu do listy zakupów użytownika(2)
+          const todo2 = await supertest(app)
+            .post("/todos")
+            .set("Authorization", `Bearer ${token2}`)
+            .send({
+              name: todoPayload_2.name,
+              amount: todoPayload_2.amount,
+              grammage: todoPayload_2.grammage,
+              shoppingListId: shoppingList2.body.shoppingListId,
+            });
+
+          // próba usunięcia przedmiotu z listy użytkownika(2) przez użytkownika(1)
           const resDelete = await supertest(app)
-            .delete(`/shoppingLists/${shoppingList2.body._id}`)
+            .delete(`/todos/${todo2.body._id}`)
             .set("Authorization", `Bearer ${token}`);
 
           expect(resDelete.statusCode).toBe(401);
@@ -672,7 +707,7 @@ describe("todo", () => {
         });
       });
       describe("given the user is the owner of the shopping list", () => {
-        it("should return a 200 status and the shoppingList(s)", async () => {
+        it("should return a 200 status and the todo", async () => {
           // token autoryzacyjny użytkownika, który będzie dodany do requestów
           const token = jwt.sign(
             {
@@ -687,14 +722,25 @@ describe("todo", () => {
             .set("Authorization", `Bearer ${token}`)
             .send(shoppingListPayload_1);
 
-          // usunięcie listy użytkownika
+          // dodanie przedmiotu do listy zakupów użytownika
+          const todo = await supertest(app)
+            .post("/todos")
+            .set("Authorization", `Bearer ${token}`)
+            .send({
+              name: todoPayload_1.name,
+              amount: todoPayload_1.amount,
+              grammage: todoPayload_1.grammage,
+              shoppingListId: shoppingList.body.shoppingListId,
+            });
+
+          // usunięcie przedmiotu z listy użytkownika
           const resDelete = await supertest(app)
-            .delete(`/shoppingLists/${shoppingList.body._id}`)
+            .delete(`/todos/${todo.body._id}`)
             .set("Authorization", `Bearer ${token}`);
 
           // pobranie wszystkich list użytkownika
           const resGet = await supertest(app)
-            .get(`/shoppingLists`)
+            .get(`/todos/${shoppingList.body.shoppingListId}`)
             .set("Authorization", `Bearer ${token}`);
 
           expect(resGet.statusCode).toBe(200);
@@ -703,12 +749,12 @@ describe("todo", () => {
           expect(resDelete.statusCode).toBe(200);
           expect(resDelete.body).toEqual({
             __v: 0,
-            _id: shoppingList.body._id,
+            _id: todo.body._id,
             shoppingListId: shoppingList.body.shoppingListId,
-            name: shoppingList.body.name,
-            date: shoppingList.body.date,
+            name: todoPayload_1.name,
+            amount: todoPayload_1.amount,
+            grammage: todoPayload_1.grammage,
             completed: false,
-            userId: shoppingList.body.userId,
           });
         });
       });
