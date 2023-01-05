@@ -39,16 +39,16 @@ const user_id_1 = new mongoose.Types.ObjectId().toString();
 const userPayload_1 = {
   _id: user_id_1,
   userId: "9d7074c8-e1d4-4fee-b19c-aaaaaaaaaaaa",
-  username: "user1",
-  password: "pass1",
+  username: "username1",
+  password: "password1",
 };
 
 const user_id_2 = new mongoose.Types.ObjectId().toString();
 const userPayload_2 = {
   _id: user_id_2,
   userId: "9d7074c8-e1d4-4fee-b19c-bbbbbbbbbbbb",
-  username: "user2",
-  password: "pass2",
+  username: "username2",
+  password: "password2",
 };
 
 const clearDatabase = async () => {

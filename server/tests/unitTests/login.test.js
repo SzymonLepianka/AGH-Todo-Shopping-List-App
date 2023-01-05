@@ -7,20 +7,9 @@ const app = require("../../src/app.js");
 
 require("dotenv").config();
 
-const user_id_1 = new mongoose.Types.ObjectId().toString();
 const userPayload_1 = {
-  _id: user_id_1,
-  userId: "9d7074c8-e1d4-4fee-b19c-aaaaaaaaaaaa",
-  username: "user1",
-  password: "pass1",
-};
-
-const user_id_2 = new mongoose.Types.ObjectId().toString();
-const userPayload_2 = {
-  _id: user_id_2,
-  userId: "9d7074c8-e1d4-4fee-b19c-bbbbbbbbbbbb",
-  username: "user2",
-  password: "pass2",
+  username: "username1",
+  password: "password1",
 };
 
 const clearDatabase = async () => {
@@ -51,16 +40,17 @@ describe("login", () => {
     describe("given the username is empty", () => {
       it("should return a 400", async () => {
         // rejestracja użytkownika
-        const resReqister = await supertest(app)
-          .post("/register")
-          .send({ username: "user1", password: "pass1" });
+        const resReqister = await supertest(app).post("/register").send({
+          username: userPayload_1.username,
+          password: userPayload_1.password,
+        });
         expect(resReqister.statusCode).toBe(201);
         expect(resReqister.text).toBe("Created!");
 
         // logowanie użytkownika
         const resLogin = await supertest(app)
           .post("/login")
-          .send({ username: "", password: "pass1" });
+          .send({ username: "", password: userPayload_1.password });
         expect(resLogin.statusCode).toBe(400);
         expect(resLogin.text).toEqual("Empty username");
         expect(resLogin.body).toEqual({});
@@ -70,16 +60,17 @@ describe("login", () => {
     describe("given the username param is missing", () => {
       it("should return a 400", async () => {
         // rejestracja użytkownika
-        const resReqister = await supertest(app)
-          .post("/register")
-          .send({ username: "user1", password: "pass1" });
+        const resReqister = await supertest(app).post("/register").send({
+          username: userPayload_1.username,
+          password: userPayload_1.password,
+        });
         expect(resReqister.statusCode).toBe(201);
         expect(resReqister.text).toBe("Created!");
 
         // logowanie użytkownika
         const resLogin = await supertest(app)
           .post("/login")
-          .send({ password: "pass1" });
+          .send({ password: userPayload_1.password });
         expect(resLogin.statusCode).toBe(400);
         expect(resLogin.text).toEqual("Empty username");
         expect(resLogin.body).toEqual({});
@@ -89,9 +80,10 @@ describe("login", () => {
     describe("given the username param is missing and password param is missing", () => {
       it("should return a 400", async () => {
         // rejestracja użytkownika
-        const resReqister = await supertest(app)
-          .post("/register")
-          .send({ username: "user1", password: "pass1" });
+        const resReqister = await supertest(app).post("/register").send({
+          username: userPayload_1.username,
+          password: userPayload_1.password,
+        });
         expect(resReqister.statusCode).toBe(201);
         expect(resReqister.text).toBe("Created!");
 
@@ -105,16 +97,17 @@ describe("login", () => {
     describe("given the password is empty", () => {
       it("should return a 400", async () => {
         // rejestracja użytkownika
-        const resReqister = await supertest(app)
-          .post("/register")
-          .send({ username: "user1", password: "pass1" });
+        const resReqister = await supertest(app).post("/register").send({
+          username: userPayload_1.username,
+          password: userPayload_1.password,
+        });
         expect(resReqister.statusCode).toBe(201);
         expect(resReqister.text).toBe("Created!");
 
         // logowanie użytkownika
         const resLogin = await supertest(app)
           .post("/login")
-          .send({ password: "", username: "user1" });
+          .send({ password: "", username: userPayload_1.username });
         expect(resLogin.statusCode).toBe(400);
         expect(resLogin.text).toEqual("Empty password");
         expect(resLogin.body).toEqual({});
@@ -124,9 +117,10 @@ describe("login", () => {
     describe("given the username is empty and password is empty", () => {
       it("should return a 400", async () => {
         // rejestracja użytkownika
-        const resReqister = await supertest(app)
-          .post("/register")
-          .send({ username: "user1", password: "pass1" });
+        const resReqister = await supertest(app).post("/register").send({
+          username: userPayload_1.username,
+          password: userPayload_1.password,
+        });
         expect(resReqister.statusCode).toBe(201);
         expect(resReqister.text).toBe("Created!");
 
@@ -142,16 +136,17 @@ describe("login", () => {
     describe("given the password param is missing", () => {
       it("should return a 400", async () => {
         // rejestracja użytkownika
-        const resReqister = await supertest(app)
-          .post("/register")
-          .send({ username: "user1", password: "pass1" });
+        const resReqister = await supertest(app).post("/register").send({
+          username: userPayload_1.username,
+          password: userPayload_1.password,
+        });
         expect(resReqister.statusCode).toBe(201);
         expect(resReqister.text).toBe("Created!");
 
         // logowanie użytkownika
         const resLogin = await supertest(app)
           .post("/login")
-          .send({ username: "user1" });
+          .send({ username: userPayload_1.username });
         expect(resLogin.statusCode).toBe(400);
         expect(resLogin.text).toEqual("Empty password");
         expect(resLogin.body).toEqual({});
@@ -161,16 +156,18 @@ describe("login", () => {
     describe("given the username and password are correct (to login)", () => {
       it("should return a 200", async () => {
         // rejestracja użytkownika
-        const resReqister = await supertest(app)
-          .post("/register")
-          .send({ username: "user1", password: "pass1" });
+        const resReqister = await supertest(app).post("/register").send({
+          username: userPayload_1.username,
+          password: userPayload_1.password,
+        });
         expect(resReqister.statusCode).toBe(201);
         expect(resReqister.text).toBe("Created!");
 
         // logowanie użytkownika
-        const resLogin = await supertest(app)
-          .post("/login")
-          .send({ username: "user1", password: "pass1" });
+        const resLogin = await supertest(app).post("/login").send({
+          username: userPayload_1.username,
+          password: userPayload_1.password,
+        });
         expect(resLogin.statusCode).toBe(200);
         expect(typeof resLogin.body.token).toBe("string");
 
@@ -193,16 +190,17 @@ describe("login", () => {
         ],
       ])("should not return a 200", async (password) => {
         // rejestracja użytkownika
-        const resReqister = await supertest(app)
-          .post("/register")
-          .send({ username: "user1", password: "pass1" });
+        const resReqister = await supertest(app).post("/register").send({
+          username: userPayload_1.username,
+          password: userPayload_1.password,
+        });
         expect(resReqister.statusCode).toBe(201);
         expect(resReqister.text).toBe("Created!");
 
         // logowanie użytkownika
         const resLogin = await supertest(app)
           .post("/login")
-          .send({ username: "user1", password: password });
+          .send({ username: userPayload_1.username, password: password });
         expect(resLogin.statusCode).not.toBe(200);
       });
     });
@@ -219,16 +217,17 @@ describe("login", () => {
         ],
       ])("should not return a 200", async (username) => {
         // rejestracja użytkownika
-        const resReqister = await supertest(app)
-          .post("/register")
-          .send({ username: "user1", password: "pass1" });
+        const resReqister = await supertest(app).post("/register").send({
+          username: userPayload_1.username,
+          password: userPayload_1.password,
+        });
         expect(resReqister.statusCode).toBe(201);
         expect(resReqister.text).toBe("Created!");
 
         // logowanie użytkownika
         const resLogin = await supertest(app)
           .post("/login")
-          .send({ username: username, password: "pass1" });
+          .send({ username: username, password: userPayload_1.password });
         expect(resLogin.statusCode).not.toBe(200);
       });
     });
@@ -246,9 +245,10 @@ describe("login", () => {
         ],
       ])("should not return a 200", async (username, password) => {
         // rejestracja użytkownika
-        const resReqister = await supertest(app)
-          .post("/register")
-          .send({ username: "user1", password: "pass1" });
+        const resReqister = await supertest(app).post("/register").send({
+          username: userPayload_1.username,
+          password: userPayload_1.password,
+        });
         expect(resReqister.statusCode).toBe(201);
         expect(resReqister.text).toBe("Created!");
 
