@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
@@ -18,20 +18,22 @@ function App() {
 
   return (
     <div className="App">
-      <TokenContext.Provider value={[token, setToken]}>
-        <Routes>
-          <Route
-            path="/"
-            element={<ProtectedRoute element={ShoppingListPage} />}
-          />
-          <Route
-            path="/details/:shoppingListId"
-            element={<ProtectedRoute element={TodoPage} />}
-          />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
-        </Routes>
-      </TokenContext.Provider>
+      <BrowserRouter>
+        <TokenContext.Provider value={[token, setToken]}>
+          <Routes>
+            <Route
+              path="/"
+              element={<ProtectedRoute element={ShoppingListPage} />}
+            />
+            <Route
+              path="/details/:shoppingListId"
+              element={<ProtectedRoute element={TodoPage} />}
+            />
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
+          </Routes>
+        </TokenContext.Provider>
+      </BrowserRouter>
     </div>
   );
 }

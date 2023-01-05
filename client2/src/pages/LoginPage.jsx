@@ -1,21 +1,25 @@
-import React, { useContext, useState } from 'react';
-import loginRequest from '../api/loginRequest';
-import { useNavigate } from 'react-router-dom';
-import { TokenContext } from '../App';
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router";
+import { loginRequest } from "../api/loginRequest";
+import { TokenContext } from "../App";
 
 export const LoginPage = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [token, setToken] = useContext(TokenContext);
-    const navigate = useNavigate();
-    
+  const navigate = useNavigate();
+
   const handleLogin = (e) => {
     e.preventDefault();
+    if (username === "" || password === "") {
+      setError("Username and password required!");
+      return;
+    }
     loginRequest(username, password)
       .then(({ token }) => {
         setToken(token);
-        navigate('/');
+        navigate("/");
       })
       .catch((err) => {
         setError(err.message);
@@ -24,24 +28,32 @@ export const LoginPage = () => {
 
   return (
     <div>
-      <h1>Login</h1>
-      <div style={{ color: 'red' }}>{error}</div>
-          <form onSubmit={handleLogin}>
-              {`Username: `}
-            <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            />
-            <br></br>
-            {`Password: `}
-            <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-              />
-              <br></br>
-           <button>Login</button>
+      <h1 data-testid="loginpage-title-label">Login</h1>
+      {error && (
+        <div style={{ color: "red" }}>
+          <label data-testid="error-label">{error}</label>
+        </div>
+      )}
+      <form data-testid="login-form" onSubmit={handleLogin}>
+        <label data-testid="username-label">{`Username: `}</label>
+        <input
+          type="text"
+          value={username}
+          data-testid="username-input"
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <br></br>
+        <label data-testid="password-label">{`Password: `}</label>
+        <input
+          type="password"
+          value={password}
+          data-testid="password-input"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <br></br>
+        <button data-testid="submit-login-button" name="loginSubmitButton">
+          Submit
+        </button>
       </form>
     </div>
   );

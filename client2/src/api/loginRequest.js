@@ -1,20 +1,25 @@
-import { API_URL } from "./config"
+import { API_URL } from "./config";
+import axios from "axios";
 
-export default (username, password) => {
-    return fetch(`${API_URL}/login`, {
-        method: 'POST',
+export const loginRequest = (username, password) => {
+  return axios
+    .post(
+      `${API_URL}/login`,
+      {
+        username,
+        password,
+      },
+      {
         headers: {
-            "Content-Type": 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-            username, password
-        })
-    })
-        .then(response => {
-            if (response.ok) {
-                return response.json()
-            } else {
-                throw new Error('Login failed')
-            }
-        })
-}
+      }
+    )
+    .then((response) => {
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        throw new Error("Login failed");
+      }
+    });
+};
