@@ -16,6 +16,36 @@ export const LoginPage = () => {
       setError("Username and password required!");
       return;
     }
+
+    if (username.length > 50) {
+      setError("Too long username");
+      return;
+    }
+
+    if (password.length > 50) {
+      setError("Too long password");
+      return;
+    }
+
+    if (username.length < 5) {
+      setError("Minimum 5 characters in username");
+      return;
+    }
+    if (password.length < 5) {
+      setError("Minimum 5 characters in password");
+      return;
+    }
+
+    const illegalRegexExp = /.*[!,%&*].*/;
+    if (illegalRegexExp.test(username)) {
+      setError("Illegal characters is username");
+      return;
+    }
+    if (illegalRegexExp.test(password)) {
+      setError("Illegal characters is password");
+      return;
+    }
+
     loginRequest(username, password)
       .then(({ token }) => {
         setToken(token);

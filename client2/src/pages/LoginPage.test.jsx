@@ -35,28 +35,55 @@ describe("Login render Page", () => {
 });
 
 describe("Form behaviour", () => {
-  it("validate user inputs, and provides error messages", async () => {
-    render(<LoginPage />);
+  it.each([
+    ["", "", "Username and password required!"],
+    ["okokok", "", "Username and password required!"],
+    ["", "okokok", "Username and password required!"],
+    ["usr3", "password3", "Minimum 5 characters in username"],
+    ["username3", "pas3", "Minimum 5 characters in password"],
+    ["usr3", "pas3", "Minimum 5 characters in username"],
+    ["%", "%", "Minimum 5 characters in username"],
+    ["username1", "!@#$%^&*{}", "Illegal characters is password"],
+    ["!@#$%^&*{}", "!@#$%^&*{}", "Illegal characters is username"],
+    ["!@#$%^&*{}", "password1", "Illegal characters is username"],
+    [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "Too long username",
+    ],
+    [
+      "username1",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "Too long password",
+    ],
+    [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "password1",
+      "Too long username",
+    ],
+  ])(
+    "validate user inputs, and provides error messages",
+    async (username, password, error_message) => {
+      render(<LoginPage />);
 
-    fireEvent.change(screen.getByTestId("username-input"), {
-      target: { value: "" },
-    });
+      fireEvent.change(screen.getByTestId("username-input"), {
+        target: { value: username },
+      });
 
-    fireEvent.change(screen.getByTestId("password-input"), {
-      target: { value: "" },
-    });
+      fireEvent.change(screen.getByTestId("password-input"), {
+        target: { value: password },
+      });
 
-    expect(screen.queryByTestId("error-label")).not.toBeInTheDocument();
+      expect(screen.queryByTestId("error-label")).not.toBeInTheDocument();
 
-    const submitButton = screen.queryByTestId("submit-login-button");
-    fireEvent.click(submitButton);
+      const submitButton = screen.queryByTestId("submit-login-button");
+      fireEvent.click(submitButton);
 
-    expect(screen.getByTestId("error-label")).toBeInTheDocument();
+      expect(screen.getByTestId("error-label")).toBeInTheDocument();
 
-    expect(
-      screen.getByText("Username and password required!")
-    ).toBeInTheDocument();
-  });
+      expect(screen.getByText(error_message)).toBeInTheDocument();
+    }
+  );
 
   it("should submit when form inputs contain text", async () => {
     render(<LoginPage />);
@@ -78,7 +105,7 @@ describe("Form behaviour", () => {
   });
 });
 
-describe("user logs in successfully and token added to localstorage", () => {
+describe("user logs in successfully and redirects", () => {
   it("allows the user to login successfully", async () => {
     axios.post.mockImplementation(() =>
       Promise.resolve({ status: 200, data: { token: "user_token" } })
