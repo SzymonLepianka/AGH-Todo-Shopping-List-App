@@ -1,18 +1,24 @@
+import axios from "axios";
 import { API_URL } from "./config";
 
-export default (todo, shoppingListId, token) => {
-  return fetch(`${API_URL}/todos`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+export const createTodoRequest = async (todo, shoppingListId, token) => {
+  const response = await axios.post(
+    `${API_URL}/todos`,
+    {
       name: todo.name,
       amount: todo.amount,
       grammage: todo.grammage,
       completed: false,
       shoppingListId: shoppingListId,
-    }),
-  }).then((response) => response.json());
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  if (response.status === 200) {
+    return response.data;
+  }
 };
