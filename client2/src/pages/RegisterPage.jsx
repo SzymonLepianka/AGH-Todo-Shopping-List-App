@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import registerRequest from "../api/registerRequest";
+import { registerRequest } from "../api/registerRequest";
 import { useNavigate } from "react-router-dom";
 
 export const RegisterPage = () => {

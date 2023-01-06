@@ -1,25 +1,22 @@
 import { API_URL } from "./config";
 import axios from "axios";
 
-export const loginRequest = (username, password) => {
-  return axios
-    .post(
-      `${API_URL}/login`,
-      {
-        username,
-        password,
+export const loginRequest = async (username, password) => {
+  const response = await axios.post(
+    `${API_URL}/login`,
+    {
+      username,
+      password,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
       },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-    .then((response) => {
-      if (response.status === 200) {
-        return response.data;
-      } else {
-        throw new Error("Login failed");
-      }
-    });
+    }
+  );
+  if (response.status === 200) {
+    return response.data;
+  } else {
+    throw new Error("Login failed");
+  }
 };

@@ -34,6 +34,11 @@ describe("Register render Page", () => {
     expect(screen.getByText("Submit register")).toBeInTheDocument();
     expect(screen.getByTestId("submit-register-button")).toBeInTheDocument();
   });
+
+  it("doesn't render an error label", () => {
+    render(<RegisterPage />);
+    expect(screen.queryByTestId("error-label")).not.toBeInTheDocument();
+  });
 });
 
 describe("Form behaviour", () => {
@@ -101,9 +106,11 @@ describe("Form behaviour", () => {
     );
     fireEvent.submit(screen.getByTestId("register-form"));
 
+    expect(screen.queryByTestId("error-label")).not.toBeInTheDocument();
     expect(
       screen.queryByText("Username and password required!")
     ).not.toBeInTheDocument();
+    expect(screen.queryByTestId("error-label")).not.toBeInTheDocument();
   });
 });
 
@@ -114,9 +121,7 @@ describe("user register successfully and redirects", () => {
     );
 
     // Render the Register component
-    //   await act(async () =>
     render(<RegisterPage />);
-    //   );
 
     // fill out the form
     fireEvent.change(screen.getByTestId("username-input"), {
@@ -128,15 +133,13 @@ describe("user register successfully and redirects", () => {
 
     // Submit the form
     const submitButton = screen.queryByTestId("submit-register-button");
-
-    // await act(async () => {
     fireEvent.click(submitButton);
+
     await waitFor(() => {
       expect(navigate).toHaveBeenCalledTimes(1);
     });
     await waitFor(() => {
       expect(navigate).toHaveBeenCalledWith("/login");
     });
-    // });
   });
 });

@@ -14,7 +14,7 @@ beforeEach(() => {
 describe("Login render Page", () => {
   it("renders the Login page", () => {
     render(<LoginPage />);
-    expect(screen.getByTestId("loginpage-title-label")).toBeInTheDocument(); // expect(screen.getByText(/Login/i)).toBeInTheDocument();
+    expect(screen.getByTestId("loginpage-title-label")).toBeInTheDocument(); // alternatywa: expect(screen.getByText(/Login/i)).toBeInTheDocument();
   });
 
   it("render 2 input components", () => {
@@ -31,6 +31,11 @@ describe("Login render Page", () => {
     expect(screen.getByRole("button", { name: /Submit/i })).toBeInTheDocument();
     expect(screen.getByText("Submit")).toBeInTheDocument();
     expect(screen.getByTestId("submit-login-button")).toBeInTheDocument();
+  });
+
+  it("doesn't render an error label", () => {
+    render(<LoginPage />);
+    expect(screen.queryByTestId("error-label")).not.toBeInTheDocument();
   });
 });
 
@@ -99,9 +104,11 @@ describe("Form behaviour", () => {
     );
     fireEvent.submit(screen.getByTestId("login-form"));
 
+    expect(screen.queryByTestId("error-label")).not.toBeInTheDocument();
     expect(
       screen.queryByText("Username and password required!")
     ).not.toBeInTheDocument();
+    expect(screen.queryByTestId("error-label")).not.toBeInTheDocument();
   });
 });
 
@@ -112,9 +119,7 @@ describe("user logs in successfully and redirects", () => {
     );
 
     // Render the Login component
-    //   await act(async () =>
     render(<LoginPage />);
-    //   );
 
     // fill out the form
     fireEvent.change(screen.getByTestId("username-input"), {
@@ -126,15 +131,13 @@ describe("user logs in successfully and redirects", () => {
 
     // Submit the form
     const submitButton = screen.queryByTestId("submit-login-button");
-
-    // await act(async () => {
     fireEvent.click(submitButton);
+
     await waitFor(() => {
       expect(navigate).toHaveBeenCalledTimes(1);
     });
     await waitFor(() => {
       expect(navigate).toHaveBeenCalledWith("/");
     });
-    // });
   });
 });
