@@ -1,12 +1,11 @@
-import { API_URL } from "./config"
+import { API_URL } from "./config";
 
 export default (token) => {
-    return fetch(`${API_URL}/shoppingLists`, {
-        method: 'GET',
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": 'application/json'
-        }
-    })
-        .then(response => response.json())
-}
+  return fetch(`${API_URL}/shoppingLists`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  }).then((response) => response.json());
+};
