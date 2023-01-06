@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { useQueryClient, useMutation } from "react-query";
-import createShoppingListRequest from "../api/createShoppingListRequest";
+import { createShoppingListRequest } from "../api/createShoppingListRequest";
 import { TokenContext } from "../App";
 
 export const CreateShoppingListForm = () => {

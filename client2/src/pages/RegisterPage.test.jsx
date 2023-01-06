@@ -102,7 +102,7 @@ describe("Form behaviour", () => {
       target: { value: "oatmeal" },
     });
     axios.post.mockImplementation(() =>
-      Promise.resolve({ status: 200, data: { token: "user_token" } })
+      Promise.resolve({ status: 201, data: { token: "user_token" } })
     );
     fireEvent.submit(screen.getByTestId("register-form"));
 
@@ -117,7 +117,7 @@ describe("Form behaviour", () => {
 describe("user register successfully and redirects", () => {
   it("allows the user to register successfully", async () => {
     axios.post.mockImplementation(() =>
-      Promise.resolve({ status: 200, data: { token: "user_token" } })
+      Promise.resolve({ status: 201, data: { token: "user_token" } })
     );
 
     // Render the Register component

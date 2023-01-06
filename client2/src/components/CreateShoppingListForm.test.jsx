@@ -3,7 +3,18 @@ import { render } from "../test-utils";
 import axios from "axios";
 import { CreateShoppingListForm } from "./CreateShoppingListForm";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { API_URL } from "../api/config";
 jest.mock("axios");
+
+const createdShoppingList = {
+  completed: false,
+  date: "2022-12-27",
+  name: "123454321",
+  shoppingListId: "9e677c7d-9e72-49f9-8533-b40dfde14929",
+  userId: "5d7a4d24-5df9-41be-874c-39bb9f4b69c0",
+  __v: 0,
+  _id: "63b8412668baf3605e8a52cb",
+};
 
 describe("CreateShoppingListForm render Page", () => {
   it("renders the CreateShoppingListForm page", () => {
@@ -51,26 +62,29 @@ describe("CreateShoppingListForm render Page", () => {
 describe("Form behaviour", () => {
   it.each([
     ["", ""],
-    ["okokok", ""],
-    ["", "okokok"],
+    ["sl_name", ""],
+    ["", "2022-12-12"],
     ["usr3", "pas3"],
     ["%", "%"],
-    ["username1", "!@#$%^&*{}"],
+    ["sl_name", "!@#$%^&*{}"],
     ["!@#$%^&*{}", "!@#$%^&*{}"],
-    ["!@#$%^&*{}", "password1"],
+    ["!@#$%^&*{}", "2022-12-12"],
     [
       "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     ],
     [
-      "username1",
+      "sl_name",
       "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     ],
     [
       "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "password1",
+      "2022-12-12",
     ],
   ])("validate incorrect user inputs", async (name, date) => {
+    axios.post.mockImplementation(() =>
+      Promise.resolve({ status: 200, data: createdShoppingList })
+    );
     const queryClient = new QueryClient();
 
     render(
@@ -88,12 +102,14 @@ describe("Form behaviour", () => {
 
     const submitButton = screen.queryByTestId("create-sl-button");
     fireEvent.click(submitButton);
-    // await waitFor(() => {
-    //   expect(navigate).toHaveBeenCalledTimes(0);
-    // });
+
+    expect(axios.post).toHaveBeenCalledTimes(0);
   });
 
   it("should submit when form inputs contain text", async () => {
+    axios.post.mockImplementation(() =>
+      Promise.resolve({ status: 200, data: createdShoppingList })
+    );
     const queryClient = new QueryClient();
 
     render(
@@ -111,52 +127,60 @@ describe("Form behaviour", () => {
       Promise.resolve({ status: 200, data: { token: "user_token" } })
     );
     fireEvent.submit(screen.getByTestId("create-sl-form"));
-
-    // await waitFor(() => {
-    //   expect(navigate).toHaveBeenCalledTimes(1);
-    // });
-
-    // expect(
-    //   screen.queryByText("Username and password required!")
-    // ).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledTimes(1);
+    });
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledWith(
+        `${API_URL}/shoppingLists`,
+        { completed: false, date: "2022-12-12", name: "shaquille" },
+        {
+          headers: {
+            Authorization: "Bearer null",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    });
   });
 });
 
 describe("user create shopping list successfully", () => {
   it("allows the user to create shopping list successfully", async () => {
     axios.post.mockImplementation(() =>
-      Promise.resolve({ status: 200, data: { token: "user_token" } })
+      Promise.resolve({ status: 200, data: createdShoppingList })
     );
-
-    // Render the Register component
-    //   await act(async () =>
     const queryClient = new QueryClient();
 
     render(
       <QueryClientProvider client={queryClient}>
         <CreateShoppingListForm />
       </QueryClientProvider>
-    ); //   );
-
-    // fill out the form
+    );
     fireEvent.change(screen.getByTestId("name-input"), {
       target: { value: "shaquille" },
     });
     fireEvent.change(screen.getByTestId("date-input"), {
-      target: { value: "oatmeal" },
+      target: { value: "2022-12-12" },
     });
-
-    // Submit the form
-    const submitButton = screen.queryByTestId("create-sl-form");
-
-    // await act(async () => {
-    fireEvent.click(submitButton);
-    // await waitFor(() => {
-    //   expect(navigate).toHaveBeenCalledTimes(1);
-    // });
-    // await waitFor(() => {
-    //   expect(navigate).toHaveBeenCalledWith("/login");
-    // });
-    // });
+    axios.post.mockImplementation(() =>
+      Promise.resolve({ status: 200, data: { token: "user_token" } })
+    );
+    fireEvent.submit(screen.getByTestId("create-sl-form"));
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledTimes(1);
+    });
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledWith(
+        `${API_URL}/shoppingLists`,
+        { completed: false, date: "2022-12-12", name: "shaquille" },
+        {
+          headers: {
+            Authorization: "Bearer null",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    });
   });
 });
