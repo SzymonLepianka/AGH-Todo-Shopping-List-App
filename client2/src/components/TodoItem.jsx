@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect, useContext } from "react";
 import { useQueryClient, useMutation } from "react-query";
-import updateTodoRequest from "../api/updateTodoRequest";
-import deleteTodoRequest from "../api/deleteTodoRequest";
+import { updateTodoRequest } from "../api/updateTodoRequest";
+import { deleteTodoRequest } from "../api/deleteTodoRequest";
 import { debounce } from "lodash";
 import { TokenContext } from "../App";
 
@@ -50,6 +50,7 @@ export const TodoItem = ({ todo }) => {
       <input
         checked={todo.completed}
         type="checkbox"
+        data-testid="completed-todo-input"
         value={todo.name}
         onChange={() => {
           updateTodo({
@@ -59,13 +60,20 @@ export const TodoItem = ({ todo }) => {
         }}
       />
       {todo.completed ? (
-        <span style={{ textDecoration: "line-through" }}>{` ${name} `}</span>
+        <span
+          data-testid="completed-todo-label"
+          style={{ textDecoration: "line-through" }}
+        >
+          <label data-testid="crossed-todo-name-label">{` ${name} `}</label>
+        </span>
       ) : (
-        ` ${name} `
+        <label data-testid="uncrossed-todo-name-label">{` ${name} `}</label>
       )}
-      {` ${amount} `}
-      {` ${grammage} `}
-      <button onClick={() => deleteTodo(todo)}>Delete</button>
+      <label data-testid="amount-todo-label">{` ${amount} `}</label>
+      <label data-testid="grammage-todo-label">{` ${grammage} `}</label>
+      <button data-testid="delete-todo-button" onClick={() => deleteTodo(todo)}>
+        Delete
+      </button>
     </div>
   );
 };

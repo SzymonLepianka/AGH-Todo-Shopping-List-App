@@ -37,7 +37,6 @@ const completedShoppingList = {
 describe("ShoppingList render Page", () => {
   it("renders the ShoppingList page", () => {
     const queryClient = new QueryClient();
-
     render(
       <QueryClientProvider client={queryClient}>
         <ShoppingList shoppingList={shoppingList} />
