@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect, useContext } from "react";
 import { useQueryClient, useMutation } from "react-query";
-import updateShoppingListRequest from "../api/updateShoppingListRequest";
-import deleteShoppingListRequest from "../api/deleteShoppingListRequest";
+import { updateShoppingListRequest } from "../api/updateShoppingListRequest";
+import { deleteShoppingListRequest } from "../api/deleteShoppingListRequest";
 import { debounce } from "lodash";
 import { TokenContext } from "../App";
 import { useNavigate } from "react-router-dom";
@@ -46,6 +46,11 @@ export const ShoppingList = ({ shoppingList }) => {
 
   useEffect(() => {
     if (name !== shoppingList.name) {
+      if (!name) return;
+      if (name.length > 50) return;
+      if (name.length < 2) return;
+      const illegalRegexExp = /.*[!,%&*].*/;
+      if (illegalRegexExp.test(name)) return;
       debouncedUpdateShoppingList({ ...shoppingList, name });
     }
   }, [name]);
@@ -56,6 +61,7 @@ export const ShoppingList = ({ shoppingList }) => {
         checked={shoppingList.completed}
         type="checkbox"
         value={shoppingList.name}
+        data-testid="shoppingList-completed-input"
         onChange={() => {
           updateShoppingList({
             ...shoppingList,
@@ -63,20 +69,29 @@ export const ShoppingList = ({ shoppingList }) => {
           });
         }}
       />
-      {`Nazwa: `}
+      <label data-testid="shoppingList-name-label">{`Nazwa: `}</label>
       <input
         type="text"
         value={name}
+        data-testid="shoppingList-name-input"
         onChange={(e) => {
           setName(e.target.value);
         }}
       />
-      {` Sugerowana data wykonania: `}
-      {date}
+      <label data-testid="shoppingList-date-label">{` Sugerowana data wykonania: `}</label>
+      <label data-testid="shoppingList-date-content">{date}</label>
       {` `}
-      <button onClick={() => deleteShoppingList(shoppingList)}>Delete</button>
+      <button
+        data-testid="shoppingList-delete-button"
+        onClick={() => deleteShoppingList(shoppingList)}
+      >
+        Delete
+      </button>
       {` `}
-      <button onClick={() => navigate("/details/" + shoppingListId)}>
+      <button
+        data-testid="shoppingList-details-button"
+        onClick={() => navigate("/details/" + shoppingListId)}
+      >
         Szczegóły
       </button>
     </div>

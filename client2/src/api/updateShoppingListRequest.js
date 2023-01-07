@@ -1,15 +1,21 @@
+import axios from "axios";
 import { API_URL } from "./config";
 
-export default (shoppingList, token) => {
-  return fetch(`${API_URL}/shoppingLists/${shoppingList._id}`, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
+export const updateShoppingListRequest = async (shoppingList, token) => {
+  const response = await axios.put(
+    `${API_URL}/shoppingLists/${shoppingList._id}`,
+    {
       name: shoppingList.name,
       completed: shoppingList.completed,
-    }),
-  }).then((response) => response.json());
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  if (response.status === 200) {
+    return response.data;
+  }
 };
