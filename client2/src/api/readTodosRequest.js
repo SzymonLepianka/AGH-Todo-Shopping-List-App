@@ -1,12 +1,14 @@
+import axios from "axios";
 import { API_URL } from "./config";
 
-export default (shoppingListId, token) => {
-  // zwraca wszystkie zakupy dla danej listy (danego shoppingListId)
-  return fetch(`${API_URL}/todos/${shoppingListId}`, {
-    method: "GET",
+export const readTodosRequest = async (shoppingListId, token) => {
+  const response = await axios.get(`${API_URL}/todos/${shoppingListId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-  }).then((response) => response.json());
+  });
+  if (response.status === 200) {
+    return response.data;
+  }
 };
