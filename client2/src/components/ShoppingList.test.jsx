@@ -115,7 +115,7 @@ describe("Form behaviour", () => {
         },
         {
           headers: {
-            Authorization: "Bearer null",
+            Authorization: "Bearer my-token",
             "Content-Type": "application/json",
           },
         }
@@ -178,7 +178,7 @@ describe("Form behaviour", () => {
           },
           {
             headers: {
-              Authorization: "Bearer null",
+              Authorization: "Bearer my-token",
               "Content-Type": "application/json",
             },
           }
@@ -208,7 +208,7 @@ describe("Form behaviour", () => {
         `${API_URL}/shoppingLists/${shoppingList._id}`,
         {
           headers: {
-            Authorization: "Bearer null",
+            Authorization: "Bearer my-token",
             "Content-Type": "application/json",
           },
         }

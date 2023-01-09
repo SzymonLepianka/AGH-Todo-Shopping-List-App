@@ -5,7 +5,7 @@ import { TokenContext } from "./App";
 import { useState } from "react";
 
 const AllTheProviders = ({ children }) => {
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState("my-token");
 
   return (
     <BrowserRouter>

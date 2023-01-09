@@ -136,7 +136,7 @@ describe("Form behaviour", () => {
         { completed: false, date: "2022-12-12", name: "shaquille" },
         {
           headers: {
-            Authorization: "Bearer null",
+            Authorization: "Bearer my-token",
             "Content-Type": "application/json",
           },
         }
@@ -176,7 +176,7 @@ describe("user create shopping list successfully", () => {
         { completed: false, date: "2022-12-12", name: "shaquille" },
         {
           headers: {
-            Authorization: "Bearer null",
+            Authorization: "Bearer my-token",
             "Content-Type": "application/json",
           },
         }

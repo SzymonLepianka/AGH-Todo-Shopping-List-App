@@ -124,7 +124,7 @@ describe("TodoItem", () => {
         `${API_URL}/todos/${todo2._id}`,
         {
           headers: {
-            Authorization: "Bearer null",
+            Authorization: "Bearer my-token",
             "Content-Type": "application/json",
           },
         }

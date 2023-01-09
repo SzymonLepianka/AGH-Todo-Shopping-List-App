@@ -1,11 +1,14 @@
+import axios from "axios";
 import { API_URL } from "./config";
 
-export default (token) => {
-  return fetch(`${API_URL}/shoppingLists`, {
-    method: "GET",
+export const readShoppingListsRequest = async (token) => {
+  const response = await axios.get(`${API_URL}/shoppingLists`, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-  }).then((response) => response.json());
+  });
+  if (response.status === 200) {
+    return response.data;
+  }
 };
