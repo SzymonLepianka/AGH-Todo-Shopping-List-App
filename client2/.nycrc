@@ -1,0 +1,6 @@
+{
+  "include": ["src/**/*.{js,jsx}"],
+  "exclude": ["src/setupTests.js"],
+  "reporter": ["html", "text"],
+  "extension": [".js", ".jsx"]
+}
