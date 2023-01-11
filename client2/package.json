@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@faker-js/faker": "^7.6.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -20,8 +21,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --watchAll=false",
-    "eject": "react-scripts eject"
+    "test": "react-scripts test --watchAll=false --collectCoverage",
+    "eject": "react-scripts eject",
+    "cypress": "cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -47,6 +49,10 @@
     ]
   },
   "devDependencies": {
+    "cypress": "^12.3.0",
+    "cypress-each": "^1.13.1",
+    "eslint-plugin-cypress": "^2.12.1",
+    "faker": "^5.5.3",
     "react-select-event": "^5.5.1"
   }
 }

@@ -5,34 +5,12 @@ import { render, render2 } from "../test-utils";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { API_URL } from "../api/config";
 import { TodoPage } from "./TodoPage";
-import { MemoryRouter, Route } from "react-router-dom";
-import { TokenContext } from "../App";
-import { useState } from "react";
 
 jest.mock("axios");
 
 jest.mock("../components/TodoItem", () => ({
   TodoItem: () => <div data-testid="mock-todo-item" />,
 }));
-
-// jest.mock("react-router-dom", () => ({
-//   ...jest.requireActual("react-router-dom"), // use actual for all non-hook parts
-//   useParams: () => ({
-//     shoppingListId: "9e677c7d-9e72-49f9-8533-b40dfde14929",
-//     // teamId: "team-id1",
-//   }),
-//   // useRouteMatch: () => ({ url: "/company/company-id1/team/team-id1" }),
-// }));
-
-const existingShoppingList = {
-  completed: false,
-  date: "2022-12-27",
-  name: "123454321",
-  shoppingListId: "9e677c7d-9e72-49f9-8533-b40dfde14929",
-  userId: "5d7a4d24-5df9-41be-874c-39bb9f4b69c0",
-  __v: 0,
-  _id: "63b8412668baf3605e8a52cb",
-};
 
 describe("TodoPage", () => {
   it("renders the title label and loading spinner while data is loading", async () => {
