@@ -30,11 +30,10 @@ export const CreateShoppingListForm = () => {
 
     const date = new Date(dateStr);
 
-    const timestamp = date.getTime();
-
-    if (typeof timestamp !== "number" || Number.isNaN(timestamp)) {
-      return false;
-    }
+    // const timestamp = date.getTime();
+    // if (typeof timestamp !== "number" || Number.isNaN(timestamp)) {
+    //   return false;
+    // }
 
     return date.toISOString().startsWith(dateStr);
   };
@@ -47,12 +46,12 @@ export const CreateShoppingListForm = () => {
 
         if (!name || !date) return;
         if (name.length > 50) return;
-        if (date.length > 50) return;
+        // if (date.length > 50) return;
         if (name.length < 2) return;
-        if (date.length < 5) return;
+        // if (date.length < 5) return;
         const illegalRegexExp = /.*[!,%&*].*/;
         if (illegalRegexExp.test(name)) return;
-        if (illegalRegexExp.test(date)) return;
+        // if (illegalRegexExp.test(date)) return;
         if (!dateIsValid(date)) return;
 
         createShoppingList({

@@ -44,13 +44,17 @@ export const ShoppingList = ({ shoppingList }) => {
     [updateShoppingList]
   );
 
+  const handleNameChanged = (e) => {
+    if (!e) return;
+    if (e.length > 50) return;
+    if (e.length < 2) return;
+    const illegalRegexExp = /.*[!,%&*].*/;
+    if (illegalRegexExp.test(e)) return;
+    setName(e);
+  };
+
   useEffect(() => {
     if (name !== shoppingList.name) {
-      if (!name) return;
-      if (name.length > 50) return;
-      if (name.length < 2) return;
-      const illegalRegexExp = /.*[!,%&*].*/;
-      if (illegalRegexExp.test(name)) return;
       debouncedUpdateShoppingList({ ...shoppingList, name });
     }
   }, [name]);
@@ -75,7 +79,7 @@ export const ShoppingList = ({ shoppingList }) => {
         value={name}
         data-testid="shoppingList-name-input"
         onChange={(e) => {
-          setName(e.target.value);
+          handleNameChanged(e.target.value);
         }}
       />
       <label data-testid="shoppingList-date-label">{` Sugerowana data wykonania: `}</label>
