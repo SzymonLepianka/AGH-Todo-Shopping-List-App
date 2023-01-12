@@ -22,11 +22,15 @@ export const ShoppingListPage = () => {
           <ClipLoader size={150} />
         </div>
       ) : (
-        shoppingLists.map((shoppingList) => (
-          <ShoppingList shoppingList={shoppingList} key={shoppingList._id} />
-        ))
+        <div data-testid="shopping-lists">
+          {shoppingLists.map((shoppingList) => (
+            <ShoppingList shoppingList={shoppingList} key={shoppingList._id} />
+          ))}
+        </div>
       )}
-      <CreateShoppingListForm />
+      <div data-testid="create-shopping-list-form">
+        <CreateShoppingListForm />
+      </div>
     </div>
   );
 };
