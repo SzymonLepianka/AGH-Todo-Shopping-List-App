@@ -24,7 +24,7 @@ export const CreateTodoForm = ({ shoppingListId }) => {
   const grammageOptions = [
     { value: "szt", label: "szt" },
     { value: "kg", label: "kg" },
-    { value: "g", label: "g" },
+    { value: "l", label: "l" },
     { value: "m", label: "m" },
   ];
 
@@ -72,7 +72,7 @@ export const CreateTodoForm = ({ shoppingListId }) => {
         if (
           grammage !== "szt" &&
           grammage !== "kg" &&
-          grammage !== "g" &&
+          grammage !== "l" &&
           grammage !== "m"
         )
           return;

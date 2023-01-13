@@ -86,6 +86,7 @@ describe("ShoppingListPage (home)", () => {
     ["x", "2045-12-21"],
     ["", "2023-01-01"],
     ["sl_name", ""],
+    ["", ""],
     ["!@#$%^&*{}", "2012-12-12"],
   ])(
     "attempting to create a new list using illegal data",

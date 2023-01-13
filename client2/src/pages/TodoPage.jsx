@@ -26,9 +26,15 @@ export const TodoPage = () => {
           <ClipLoader size={150} />
         </div>
       ) : (
-        todos.map((todo) => <TodoItem todo={todo} key={todo._id} />)
+        <div data-testid="todos">
+          {todos.map((todo) => (
+            <TodoItem todo={todo} key={todo._id} />
+          ))}
+        </div>
       )}
-      <CreateTodoForm shoppingListId={shoppingListId} />
+      <div data-testid="create-todo">
+        <CreateTodoForm shoppingListId={shoppingListId} />
+      </div>
     </div>
   );
 };
