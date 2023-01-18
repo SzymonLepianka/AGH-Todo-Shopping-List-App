@@ -317,25 +317,26 @@ describe("shoppingList", () => {
 
     describe("given the user is logged in (to update shoppingList)", () => {
       describe("given the shopping list id doesn't exist", () => {
-        it.each([["63911197da116998ae2e8cd6"], ["123"]])(
-          "should return a 400",
-          async (sl_id) => {
-            // token autoryzacyjny użytkownika, który będzie dodany do requestów
-            const token = jwt.sign(
-              {
-                userId: userPayload_1.userId,
-              },
-              process.env.SECRET
-            );
+        it.each([
+          ["63911197da116998ae2e8cd6"],
+          ["123"],
+          ["aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"],
+        ])("should return a 400", async (sl_id) => {
+          // token autoryzacyjny użytkownika, który będzie dodany do requestów
+          const token = jwt.sign(
+            {
+              userId: userPayload_1.userId,
+            },
+            process.env.SECRET
+          );
 
-            // aktualizacja listy, która nie istnieje, przez użytkownika
-            const resPut = await supertest(app)
-              .put(`/shoppingLists/${sl_id}`)
-              .set("Authorization", `Bearer ${token}`);
+          // aktualizacja listy, która nie istnieje, przez użytkownika
+          const resPut = await supertest(app)
+            .put(`/shoppingLists/${sl_id}`)
+            .set("Authorization", `Bearer ${token}`);
 
-            expect(resPut.statusCode).toBe(400);
-          }
-        );
+          expect(resPut.statusCode).toBe(400);
+        });
       });
       describe("given the user isn't the owner of the shopping list", () => {
         it("should return a 401", async () => {
@@ -370,6 +371,40 @@ describe("shoppingList", () => {
           expect(resPut.text).toEqual(
             "Shopping list doesn't belong to this user"
           );
+        });
+      });
+      describe("given the user is the owner of the shopping list but data is incorrect", () => {
+        it.each([
+          ["", ""],
+          [true, ""],
+          ["", "qwertyuio"],
+          [true, "123"],
+          [
+            true,
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaooooooaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          ],
+        ])("should return a 400 status", async (completed, name) => {
+          // token autoryzacyjny użytkownika, który będzie dodany do requestów
+          const token = jwt.sign(
+            {
+              userId: userPayload_1.userId,
+            },
+            process.env.SECRET
+          );
+
+          // dodanie listy zakupów użytownika
+          const shoppingList = await supertest(app)
+            .post("/shoppingLists")
+            .set("Authorization", `Bearer ${token}`)
+            .send(shoppingListPayload_1);
+
+          // aktualizacja listy użytkownika
+          const resPut = await supertest(app)
+            .put(`/shoppingLists/${shoppingList.body._id}`)
+            .set("Authorization", `Bearer ${token}`)
+            .send({ completed: completed, name: name });
+
+          expect(resPut.statusCode).toBe(400);
         });
       });
       describe("given the user is the owner of the shopping list", () => {

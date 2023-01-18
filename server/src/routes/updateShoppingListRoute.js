@@ -17,6 +17,26 @@ module.exports = async (req, res) => {
 
     shoppingList.completed = req.body.completed;
     shoppingList.name = req.body.name;
+
+    if (!req.body.name) {
+      res.status(400).send("Missing name param");
+      return;
+    }
+    if (req.body.name.length > 50) {
+      res.status(400).send("Too long name param");
+      return;
+    }
+
+    if (req.body.name.length < 4) {
+      res.status(400).send("Too short name param");
+      return;
+    }
+    const illegalRegexExp = /.*[!,%&*].*/;
+    if (illegalRegexExp.test(req.body.name)) {
+      res.status(400).send("Illegal name param");
+      return;
+    }
+
     await shoppingList.save();
     res.json(shoppingList);
   } catch (error) {
