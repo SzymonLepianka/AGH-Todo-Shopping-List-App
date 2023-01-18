@@ -91,6 +91,16 @@ describe("Login page", () => {
       faker.internet.password(),
       "Request failed with status code 401",
     ],
+    [
+      "test_user",
+      faker.internet.password(),
+      "Request failed with status code 401",
+    ],
+    [
+      faker.internet.userName(),
+      "test_pass",
+      "Request failed with status code 401",
+    ],
   ])("logging with wrong data", (username, password, error_message) => {
     // wejdź na stronę
     cy.visit("/");

@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon src/server.js",
-    "test": "cross-env NODE_ENV=test jest --testTimeout=5000"
+    "test": "cross-env NODE_ENV=test jest --testTimeout=5000 --collectCoverage"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "mockingoose": "^2.15.2",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "nyc": "^15.1.0"
   }
 }

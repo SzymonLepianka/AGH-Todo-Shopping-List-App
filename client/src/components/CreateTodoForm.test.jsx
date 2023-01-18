@@ -3,6 +3,8 @@ import { render } from "../test-utils";
 import axios from "axios";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { CreateTodoForm } from "./CreateTodoForm";
+import React from "react";
+import { API_URL } from "../api/config";
 
 jest.mock("axios");
 
@@ -138,6 +140,13 @@ describe("Form behaviour", () => {
       Promise.resolve({ status: 200, data: createdTodo })
     );
     const queryClient = new QueryClient();
+    jest
+      .spyOn(React, "useState")
+      .mockImplementationOnce((x) => [x, () => null])
+      .mockImplementationOnce(() => ["1236", () => null])
+      .mockImplementationOnce(() => [1236, () => null])
+      .mockImplementationOnce(() => ["kg", () => null])
+      .mockImplementationOnce(() => ["kg", () => null]);
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -145,43 +154,32 @@ describe("Form behaviour", () => {
       </QueryClientProvider>
     );
 
-    // const nameInputComponent = screen.queryByTestId("todo-name-input");
-    // expect(nameInputComponent).toBeDefined();
-    // expect(nameInputComponent).not.toBeNull();
-    // fireEvent.keyDown(nameInputComponent.firstChild, { key: "ArrowDown" });
-    // await screen.findByText("chleb");
-    // fireEvent.click(screen.getByText("chleb"));
-
-    fireEvent.change(document.getElementById("name-content-input"), {
-      target: { value: "chleb" },
-    });
     fireEvent.change(screen.getByTestId("todo-amount-input"), {
-      target: { value: 123 },
-    });
-    fireEvent.change(document.getElementById("grammage-content-input"), {
-      target: { value: "kg" },
+      target: { value: 1236 },
     });
 
-    fireEvent.submit(screen.getByTestId("create-todo-form"));
+    const form1 = screen.getByTestId("create-todo-form");
+    fireEvent.submit(form1);
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalledTimes(0); //TODO fix to 1; przekazane name=''
+      expect(axios.post).toHaveBeenCalledTimes(1);
     });
-    // await waitFor(() => {
-    //   expect(axios.post).toHaveBeenCalledWith(
-    //     `${API_URL}/todos`,
-    //     {
-    //       completed: false,
-    //       name: "todo_name",
-    //       amount: 123,
-    //       grammage: "gr",
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: "Bearer null",
-    //         "Content-Type": "application/json",
-    //       },
-    //     }
-    //   );
-    // });
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledWith(
+        `${API_URL}/todos`,
+        {
+          completed: false,
+          name: "1236",
+          amount: 1236,
+          grammage: "kg",
+          shoppingListId: createdTodo.shoppingListId,
+        },
+        {
+          headers: {
+            Authorization: "Bearer my-token",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    });
   });
 });
